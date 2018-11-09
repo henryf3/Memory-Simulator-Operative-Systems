@@ -459,4 +459,3 @@ int main(int argc, char *argv[])
 }
 
 
-//Si la pagina ya estaba en memoria dirty set to -1.
