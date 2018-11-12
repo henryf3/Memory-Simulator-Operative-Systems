@@ -285,7 +285,7 @@ int searchind_one(int idproc, int page, bool * is_in_table){
 	if (!*is_in_table){
 		faults++; //Contamos un fallo cada vez que no esta en la tabla una pagina especifica.
 		if (searchfreepage(pagetablev1, &index)){
-			redwri=redwri+1;; //Escribir en pagina vacia
+			redwri=redwri+1; //Escribir en pagina vacia
 			return index;
 		}else if(searchfirstcase(pagetablev1, &index)){//00
 			redwri=redwri+1;
@@ -422,11 +422,11 @@ int main(int argc, char *argv[])
       replace_two(id_process, instruction, memoryreference, caracter, contador);
 		}
 
-		contador++;  //To establish every 200 instructions the reference bit to zero
+		
 		if(contador%200==0){
 				setreferencetozero();
 		}
-
+    contador++;  //To establish every 200 instructions the reference bit to zero
 		//printf("%d %d %d %s\n", id_process, instruction, memoryreference, caracter);
 	}
 	fclose(fptr);
