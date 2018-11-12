@@ -165,7 +165,7 @@ void replace_two(int id_process, int instruction, int memoryreference, char * ca
   index = searchind_two(id_process, page, &is_in_table);
 
   if (!is_in_table && debug==1) {
-    printf("%d %d %d %d %d \n ", number_instruction, index, pagetablev2[index][0], pagetablev2[index][1], pagetablev2[index][2]);
+    printf("%d %d %d %d %d \n ", number_instruction, index, pagetablev2[index][0], pagetablev2[index][1], pagetablev2[index][3]);
   }
 
   pagetablev2[index][0]=id_process;
@@ -176,7 +176,7 @@ void replace_two(int id_process, int instruction, int memoryreference, char * ca
 
   index = searchind_two(id_process, page, &is_in_table);
   if (!is_in_table && debug==1) {
-    printf("%d %d %d %d %d \n ", number_instruction, index, pagetablev2[index][0], pagetablev2[index][1], pagetablev2[index][2]);
+    printf("%d %d %d %d %d \n ", number_instruction, index, pagetablev2[index][0], pagetablev2[index][1], pagetablev2[index][3]);
   }
 
 
@@ -213,10 +213,11 @@ bool searchfirstcase(int pagetable[32][4], int * index){
 	for (int i=0; i<32; i++){
 		if (pagetable[i][2]==0 && pagetable[i][3]==0){
 			firstcase = true;
-			if (pagetable[i][1]<=minpage){
-				minpage=pagetable[i][1];
+			//if (pagetable[i][1]<=minpage){
+      //minpage=pagetable[i][1];
 				*index = i;
-			}
+        break;
+      //}
 		}
 	}
 	return firstcase;
@@ -227,24 +228,26 @@ bool searchsecondcase(int pagetable[32][4], int * index){
 	for (int i=0; i<32; i++){
 		if (pagetable[i][2]==0 && pagetable[i][3]==1){
 			secondcase = true;
-			if (pagetable[i][1]<=minpage){
-				minpage=pagetable[i][1];
+			//if (pagetable[i][1]<=minpage){
+			//	minpage=pagetable[i][1];
 				*index = i;
-			}
+        break;
+      //}
 		}
 	}
 	return secondcase;
 }
 bool searchthirdcase(int pagetable[32][4], int * index){
 	bool thirdcase = false;
-	int minpage=256;	
+	//int minpage=256;	
 	for (int i=0; i<32; i++){
 		if (pagetable[i][2]==1 && pagetable[i][3]==0){
 			thirdcase = true;
-			if (pagetable[i][1]<=minpage){
-				minpage=pagetable[i][1];
+			//if (pagetable[i][1]<=minpage){
+			//	minpage=pagetable[i][1];
 				*index = i;
-			}
+        break;
+        //}
 		}
 	}
 	return thirdcase;
@@ -255,10 +258,11 @@ bool searchforthcase(int pagetable[32][4], int * index){
 	for (int i=0; i<32; i++){
 		if (pagetable[i][2]==1 && pagetable[i][3]==1){
 			forthcase = true;
-			if (pagetable[i][1]<=minpage){
-				minpage=pagetable[i][1];
+			//if (pagetable[i][1]<=minpage){
+			//	minpage=pagetable[i][1];
 				*index = i;
-			}
+        break;
+        //}
 		}
 	}
 	return forthcase;
@@ -285,19 +289,19 @@ int searchind_one(int idproc, int page, bool * is_in_table){
 	if (!*is_in_table){
 		faults++; //Contamos un fallo cada vez que no esta en la tabla una pagina especifica.
 		if (searchfreepage(pagetablev1, &index)){
-			redwri=redwri+1; //Escribir en pagina vacia
+			//redwri=redwri+1; //Escribir en pagina vacia
 			return index;
 		}else if(searchfirstcase(pagetablev1, &index)){//00
-			redwri=redwri+1;
+			//redwri=redwri+1;
 			return index;
 		}else if(searchsecondcase(pagetablev1, &index)){//01
-			redwri=redwri+2;
-			return index;
-		}else if(searchthirdcase(pagetablev1, &index)){//10
 			redwri=redwri+1;
 			return index;
+		}else if(searchthirdcase(pagetablev1, &index)){//10
+			//redwri=redwri+1;
+			return index;
 		}else if(searchforthcase(pagetablev1, &index)){//11
-			redwri=redwri+2;
+			redwri=redwri+1;
 			return index;
 		}
 	}else{
@@ -315,7 +319,7 @@ void replace_one(int id_process, int instruction, int memoryreference, char * ca
 	index = searchind_one(id_process, page, &is_in_table);
 
 	if (!is_in_table && debug==1) {
-    printf("%d %d %d %d %d \n ", number_instruction, index, pagetablev1[index][0], pagetablev1[index][1], pagetablev1[index][2]);
+    printf("%d %d %d %d %d \n ", number_instruction, index, pagetablev1[index][0], pagetablev1[index][1], pagetablev1[index][3]);
 	}
 
 	pagetablev1[index][0]=id_process;
@@ -327,7 +331,7 @@ void replace_one(int id_process, int instruction, int memoryreference, char * ca
 	index = searchind_one(id_process, page, &is_in_table);
 
 	if (!is_in_table && debug==1) {
-    printf("%d %d %d %d %d \n ", number_instruction, index, pagetablev1[index][0], pagetablev1[index][1], pagetablev1[index][2]);
+    printf("%d %d %d %d %d \n ", number_instruction, index, pagetablev1[index][0], pagetablev1[index][1], pagetablev1[index][3]);
 	}
 
 
@@ -336,6 +340,7 @@ void replace_one(int id_process, int instruction, int memoryreference, char * ca
 	pagetablev1[index][2]=1;
 	if (*caracter=='W'){
 		pagetablev1[index][3]=1;   //dirty
+    // printf("aqui entra w %d, %d \n", pagetablev1[index][0], pagetablev1[index][1]);
 	}
 }
 
@@ -345,13 +350,15 @@ void setinitialvaluesone(void){
         pagetablev1[i][0]=-1; // id process to -1
         pagetablev1[i][1]=-1; // page to -1
         pagetablev1[i][2]=0; // reference bit to 0
-        pagetablev1[i][3]=0; // dirty bit process to 0
+        pagetablev1[i][3]= 0; // dirty bit process to 0
       }
 }
 
 void setreferencetozero(void){
 	for (int i=0; i<32; i++){ //all id process to -1
-		pagetablev1[i][2]=0;
+    /* if (pagetablev1[i][0] != -1){ */
+       pagetablev1[i][2]=0;
+    /* } */
 	}
 }
 
