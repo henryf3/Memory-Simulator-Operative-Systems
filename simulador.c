@@ -66,7 +66,7 @@ bool searchfirstcase2(int pagetable[32][4], int * index){
     firstcase = false;
   }else if (pagetable[minindex][3] != pagetable[minindex-1][3]) {
     *index = minindex;
-    if(pagetable[minindex][2] == 1){ redwri= redwri+2;} //aumentamos en dos la referencia de disco si la página que remplazamos se encuentra en dirty
+    if(pagetable[minindex][2] == 1){ redwri= redwri+2;}else{redwri = redwri+1;} //aumentamos en dos la referencia de disco si la página que remplazamos se encuentra en dirty, de lo contrario aumentamos en uno
   }
   return firstcase;
 }
@@ -107,7 +107,7 @@ bool searchthirdcase2(int pagetable[32][4], int * index){
   if (pagetable[minindex][2] == pagetable[minindex-1][2]){ //comprobamos que una este limpia y una sucia
     thirdcase = true;
 
-     if (pagetable[minindex][1] <= pagetable[minindex-1][1]){ //buscamos la pagina que no esta sucia
+     if (pagetable[minindex][1] < pagetable[minindex-1][1]){ //buscamos la pagina que no esta sucia
        if(pagetable[minindex][2] == 1){ //aumentamos en dos la referencia de disco si la página que remplazamos se encuentra en dirty
           redwri= redwri+2;
        } else {redwri = redwri+1;} //sumamos en una operacion a disco porque la pagina esta limpia 
