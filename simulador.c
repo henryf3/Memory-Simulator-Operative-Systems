@@ -274,7 +274,6 @@ int searchind_one(int idproc, int page, bool * is_in_table){
 	if (!*is_in_table){
 		faults++; //Contamos un fallo cada vez que no esta en la tabla una pagina especifica.
 		if (searchfreepage(&index)){
-			//redwri=redwri+1; //Escribir en pagina vacia
 			return index;
 		}else if(searchfirstcase(&index)){//00
 			return index;
@@ -308,8 +307,7 @@ void replace_one(int id_process, int instruction, int memoryreference, char * ca
 	pagetable[index][0]=id_process;
 	pagetable[index][1]=page;
 	pagetable[index][2]=1;
-
-    index=-100;
+	
 	
 	page = memoryreference/512;
 	index = searchind_one(id_process, page, &is_in_table);
@@ -317,15 +315,17 @@ void replace_one(int id_process, int instruction, int memoryreference, char * ca
 	if (!is_in_table && debug==1) {
     printf("%d %d %d %d %d \n ", number_instruction, index, pagetable[index][0], pagetable[index][1], pagetable[index][3]);
 	}
-	
 	pagetable[index][0]=id_process;
 	pagetable[index][1]=page;
 	pagetable[index][2]=1;
-	if (*caracter=='W'){
+	if (*caracter =='W'){
 		pagetable[index][3]=1;   //dirty
+		//~ printf("Haciendo escritura \n");
 	}
 	
-	index=-100;
+
+	
+	
 }
 
 //In this function we set -1 to all values inside pagetable.
@@ -421,28 +421,28 @@ int main(int argc, char *argv[])
 	fclose(fptr);
 
 	//printing matrix
-	/* for (int i=0; i<32; i++){ //all id process to -1 */
-	/* 	 for (int j=0; j<4; j++){ */
-	/* 		 printf("%d  ",pagetablev2[i][j]); */
-	/* 	 } */
-	/* 	 printf("\n"); */
-	/*  } */
-	if (version==1){
+	for (int i=0; i<32; i++){ //all id process to -1 */
+		for (int j=0; j<4; j++){ 
+			printf("%d  ",pagetable[i][j]); 
+		} 
+	printf("\n"); 
+	
+	}
+	if (version == 1){
 		printf("REPORTE FINAL VERSION 1 \n");
 		printf("Total de fallas %d \n", faults );
 		printf("Total de operaciones de disco %d \n", redwri );
-    if (debug == 1){
-      printf("Debug activated \n");
-    }
-
-  }else if (version==2){
+		if (debug == 1){
+		printf("Debug activated \n");
+		}
+	}else if (version==2){
     printf("Reporte FINAL VERSION 2 \n");
     printf("Total de fallas %d \n", faults);
     printf("Total de operaciones de disco %d \n", redwri);
     if(debug == 1){
       printf("Debug activated \n");
-	  }
-  }
+	 }
+	}	
 
     return 0;
 }
