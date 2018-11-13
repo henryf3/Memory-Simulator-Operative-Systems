@@ -171,7 +171,8 @@ void replace_two(int id_process, int instruction, int memoryreference, char * ca
   pagetablev2[index][0]=id_process;
   pagetablev2[index][1]=page;
   pagetablev2[index][3]=number_instruction;
-
+  pagetablev2[index][2]=0;
+  
   page = memoryreference/512;
 
   index = searchind_two(id_process, page, &is_in_table);
@@ -328,9 +329,6 @@ void replace_one(int id_process, int instruction, int memoryreference, char * ca
 		//~ printf("Haciendo escritura \n");
 	}
 	
-
-	
-	
 }
 
 //In this function we set -1 to all values inside pagetable.
@@ -377,7 +375,6 @@ int main(int argc, char *argv[])
 	//Setting debug variable
 	if (argc==4) debug=1;
 	else debug=0;
-
 
 	//~ --------------------------------------------------------------------------
 	//Opening file with data, and storing each line in four distinct variables.
@@ -426,27 +423,27 @@ int main(int argc, char *argv[])
 	fclose(fptr);
 
 	//~ //printing matrix
-	for (int i=0; i<32; i++){ //all id process to -1 */
-		for (int j=0; j<4; j++){ 
-			printf("%d  ",pagetable[i][j]); 
-		} 
-	printf("\n"); 
-	}
+	//~ for (int i=0; i<32; i++){ //all id process to -1 */
+		//~ for (int j=0; j<4; j++){ 
+			//~ printf("%d  ",pagetable[i][j]); 
+		//~ } 
+	//~ printf("\n"); 
+	//~ }
 	
 	if (version == 1){
 		printf("REPORTE FINAL VERSION 1 \n");
 		printf("Total de fallas %d \n", faults );
-		printf("Total de operaciones de disco %d \n", redwri );
+		printf("Total de escrituras %d \n", redwri );
 		if (debug == 1){
 		printf("Debug activated \n");
 		}
 	}else if (version==2){
     printf("Reporte FINAL VERSION 2 \n");
     printf("Total de fallas %d \n", faults);
-    printf("Total de operaciones de disco %d \n", redwri);
+    printf("Total de escrituras %d \n", redwri);
     if(debug == 1){
       printf("Debug activated \n");
-	 }
+	 } 
 	}	
 
     return 0;
