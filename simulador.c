@@ -195,12 +195,12 @@ void replace_two(int id_process, int instruction, int memoryreference, char * ca
 int pagetable[32][4];
 
 //To search if there is a freepage
-bool searchfreepage(int * indexfree){
+bool searchfreepage(int * index){
 	bool isfree = false;
 	for (int i=0; i<32; i++){
 		if (pagetable[i][1]==-1){
 			isfree = true;
-			*indexfree = i;
+			*index = i;
 			break;
 		}
 	}
@@ -222,7 +222,7 @@ bool searchfirstcase(int * index){
 bool searchsecondcase(int * index){
 	bool secondcase = false;
 	for (int i=0; i<32; i++){
-		if (pagetable[i][2]==0 && pagetable[i][3]==1){
+		if (pagetable[i][2]== 0 && pagetable[i][3]==1){
 			secondcase = true;
 			*index = i;
 			break;
@@ -274,16 +274,21 @@ int searchind_one(int idproc, int page, bool * is_in_table){
 	if (!*is_in_table){
 		faults++; //Contamos un fallo cada vez que no esta en la tabla una pagina especifica.
 		if (searchfreepage(&index)){
+			//~ printf("#Pagina Libre#");
 			return index;
 		}else if(searchfirstcase(&index)){//00
+			//~ printf("#Primer caso#");
 			return index;
 		}else if(searchsecondcase(&index)){//01
-			redwri=redwri+1;
+			//~ printf("#segundo caso#");
+			redwri++;
 			return index;
 		}else if(searchthirdcase(&index)){//10
+			//~ printf("#tercer caso#");
 			return index;
 		}else if(searchforthcase(&index)){//11
-			redwri=redwri+1;
+			//~ printf("#cuarto caso#");
+			redwri++;
 			return index;
 		}
 	}else{
@@ -307,7 +312,7 @@ void replace_one(int id_process, int instruction, int memoryreference, char * ca
 	pagetable[index][0]=id_process;
 	pagetable[index][1]=page;
 	pagetable[index][2]=1;
-	
+	pagetable[index][3]=0;
 	
 	page = memoryreference/512;
 	index = searchind_one(id_process, page, &is_in_table);
@@ -420,14 +425,14 @@ int main(int argc, char *argv[])
 	}
 	fclose(fptr);
 
-	//printing matrix
+	//~ //printing matrix
 	for (int i=0; i<32; i++){ //all id process to -1 */
 		for (int j=0; j<4; j++){ 
 			printf("%d  ",pagetable[i][j]); 
 		} 
 	printf("\n"); 
-	
 	}
+	
 	if (version == 1){
 		printf("REPORTE FINAL VERSION 1 \n");
 		printf("Total de fallas %d \n", faults );
