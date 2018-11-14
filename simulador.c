@@ -455,16 +455,10 @@ int main(int argc, char *argv[])
 	fclose(fptr);
 
 
-	if (version == 1){
-		printf("REPORTE FINAL VERSION 1 \n");
-		printf("Total de fallas %d \n", faults );
-		printf("Total de escrituras %d \n", redwri );
-		
-	}else if (version==2){
-		printf("Reporte FINAL VERSION 2 \n");
-		printf("Total de fallas %d \n", faults);
-		printf("Total de escrituras %d \n", redwri);
-	}
+	printf("REPORTE FINAL VERSION %d \n", version);
+	printf("Total de fallas %d \n", faults );
+	printf("Total de escrituras %d \n", redwri );
+	
 	
 	if(debug == 1){
       printf("Debug activated \n");
