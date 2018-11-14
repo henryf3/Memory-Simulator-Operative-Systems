@@ -18,7 +18,7 @@ int redwri=0, faults=0;
 int pagetablev2[32][4];
 
 
-void setinitialvaluesone2(void){
+void setinitialvaluestwo(void){
   for (int i=0; i<32; i++){
     pagetablev2[i][0]=-1; // id process to -1
     pagetablev2[i][1]=-1; // page to -1
@@ -422,7 +422,7 @@ int main(int argc, char *argv[])
 	char * caracter;
 
 	setinitialvaluesone();
-	setinitialvaluesone2();
+	setinitialvaluestwo();
 
 	//Opening file
 	fptr = fopen(name_file, "r");
