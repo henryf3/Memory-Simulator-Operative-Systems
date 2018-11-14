@@ -434,7 +434,6 @@ int main(int argc, char *argv[])
 	}
 
 	int contador=1;
-	int instruc_count=1;
 	while (1){
 
 		fscanf(fptr, "%d %d %d %c", &id_process, &instruction, &memoryreference, caracter);
@@ -448,41 +447,28 @@ int main(int argc, char *argv[])
 			replace_two(id_process, instruction, memoryreference, caracter, contador);
 		}
 
-		if(instruc_count==200){
+		if(contador%200==0){ //To establish every 200 instructions the reference bit to zero
 			setreferencetozero();
-			instruc_count=0;
 		}
-
-		instruc_count++;
-
-		contador++;//To establish every 200 instructions the reference bit to zero
-		//printf("%d %d %d %s\n", id_process, instruction, memoryreference, caracter);
+		contador++;
 	}
 	fclose(fptr);
 
-	//printing matrix
-	//~ for (int i=0; i<32; i++){ //all id process to -1 */
-		//~ for (int j=0; j<4; j++){
-			//~ printf("%d  ",pagetable[i][j]);
-		//~ }
-	//~ printf("\n");
-	//~ }
 
 	if (version == 1){
 		printf("REPORTE FINAL VERSION 1 \n");
 		printf("Total de fallas %d \n", faults );
 		printf("Total de escrituras %d \n", redwri );
-		if (debug == 1){
-		printf("Debug activated \n");
-		}
+		
 	}else if (version==2){
-    printf("Reporte FINAL VERSION 2 \n");
-    printf("Total de fallas %d \n", faults);
-    printf("Total de escrituras %d \n", redwri);
-    if(debug == 1){
+		printf("Reporte FINAL VERSION 2 \n");
+		printf("Total de fallas %d \n", faults);
+		printf("Total de escrituras %d \n", redwri);
+	}
+	
+	if(debug == 1){
       printf("Debug activated \n");
 	 }
-	}
 
     return 0;
 }
