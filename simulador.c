@@ -14,7 +14,7 @@ int redwri=0, faults=0;
 /*----------------------------------------------------------------------------------------*/
 
 
-//Values: --ID--, --Pagina--, --Referencia--, --Dirty--, --Clock
+//Values: --ID--, --Pagina--, --Dirty--, --Clock
 int pagetablev2[32][4];
 
 
