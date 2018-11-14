@@ -1,3 +1,4 @@
+//Name: Caraguay, H.  && Seraquive, J.
 #include <stdio.h>
 #include <stdlib.h> // For exit() function
 #include <string.h>
@@ -55,18 +56,28 @@ bool searchfirstcase2(int pagetable[32][4], int * index){
   bool firstcase = true;
   int minvalue = pagetable[0][3];
   int minindex = 0;
+  int counter = 0;
 
   for (int i=1; i<32; i++){
-    if (pagetable[i][3] <= minvalue){
+    if (pagetable[i][3] <= minvalue){ //= porque se revisa si hay dos valores
       minvalue = pagetable[i][3];
       minindex = i;
     }
   }
-  if (pagetable[minindex][3] == pagetable[minindex-1][3]){
+
+
+  for (int j=0;j<32;j++){
+    if (pagetable[j][3] == minvalue){
+      counter++;
+    }
+  }
+
+
+  if (counter == 2){
     firstcase = false;
-  }else if (pagetable[minindex][3] != pagetable[minindex-1][3]) {
+  }else if (counter == 1) {
     *index = minindex;
-    if(pagetable[minindex][2] == 1){ redwri= redwri+2;}else{redwri = redwri+1;} //aumentamos en dos la referencia de disco si la página que remplazamos se encuentra en dirty, de lo contrario aumentamos en uno
+    if(pagetable[minindex][2] == 1){ redwri++;} //aumentamos en uno la referencia de disco si la página que remplazamos se encuentra en dirty
   }
   return firstcase;
 }
@@ -74,20 +85,29 @@ bool searchfirstcase2(int pagetable[32][4], int * index){
 bool searchsecondcase2(int pagetable[32][4], int * index){
   bool secondcase = false;
   int minvalue = pagetable[0][3];
-  int minindex = 0;
+
+  int minindex1 = 0;
+  int minindex2 = 0;
 
   for (int i=1; i<32; i++){
-    if (pagetable[i][3] <= minvalue){
+    if (pagetable[i][3] < minvalue){
       minvalue = pagetable[i][3];
-      minindex = i;
+      minindex1 = i;
     }
   }
-  if (pagetable[minindex][2] != pagetable[minindex-1][2]){ //comprobamos que una este limpia y una sucia
+
+  for (int j = 0; j<32; j++){
+    if ((pagetable[j][3] == minvalue) && (j != minindex1)){
+      minindex2 = j;
+    }
+  }
+
+  if (pagetable[minindex1][2] != pagetable[minindex2][2]){ //comprobamos que una este limpia y una sucia
     secondcase = true;
-    if (pagetable[minindex][2] == 0){ //buscamos la pagina que no esta sucia
-      *index = minindex;
-    }else if(pagetable[minindex-1][2] == 0){
-      *index = minindex -1;
+    if (pagetable[minindex1][2] == 0){ //buscamos la pagina que no esta sucia
+      *index = minindex1;
+    }else if(pagetable[minindex2][2] == 0){
+      *index = minindex2;
     }
   }
   return secondcase;
@@ -96,28 +116,37 @@ bool searchsecondcase2(int pagetable[32][4], int * index){
 bool searchthirdcase2(int pagetable[32][4], int * index){
   bool thirdcase = false;
   int minvalue = pagetable[0][3];
-  int minindex = 0;
+
+  int minindex1 = 0;
+  int minindex2 = 0;
 
   for (int i=1; i<32; i++){
-    if (pagetable[i][3] <= minvalue){
+    if (pagetable[i][3] < minvalue){
       minvalue = pagetable[i][3];
-      minindex = i;
+      minindex1 = i;
     }
   }
-  if (pagetable[minindex][2] == pagetable[minindex-1][2]){ //comprobamos que una este limpia y una sucia
+
+  for (int j = 0; j<32; j++){
+    if ((pagetable[j][3] == minvalue) && (j != minindex1)){
+      minindex2 = j;
+    }
+  }
+
+  if (pagetable[minindex1][2] == pagetable[minindex2][2]){ //comprobamos que una este limpia y una sucia
     thirdcase = true;
 
-     if (pagetable[minindex][1] < pagetable[minindex-1][1]){ //buscamos la pagina que no esta sucia
-       if(pagetable[minindex][2] == 1){ //aumentamos en dos la referencia de disco si la página que remplazamos se encuentra en dirty
-          redwri= redwri+2;
-       } else {redwri = redwri+1;} //sumamos en una operacion a disco porque la pagina esta limpia 
-       *index = minindex;
+     if (pagetable[minindex1][1] < pagetable[minindex2][1]){ //buscamos la pagina que no esta sucia
+       if(pagetable[minindex1][2] == 1){ //aumentamos en dos la referencia de disco si la página que remplazamos se encuentra en dirty
+          redwri++;
+       }
+       *index = minindex1;
 
-    }else if (pagetable[minindex][1] > pagetable[minindex-1][1]){
-       if(pagetable[minindex-1][2] == 1){//aumentamos en dos la referencia de disco si la página que remplazamos se encuentra en dirty
-         redwri= redwri+2;
-       } else {redwri = redwri +1;}//sumamos en una operacion a disco porque la pagina esta limpia 
-      *index = minindex - 1;
+    }else if (pagetable[minindex2][1] < pagetable[minindex1][1]){
+       if(pagetable[minindex2][2] == 1){//aumentamos en dos la referencia de disco si la página que remplazamos se encuentra en dirty
+         redwri++;
+       }
+      *index = minindex2;
     }
   }
   return thirdcase;
@@ -135,19 +164,17 @@ int searchind_two(int idproc, int page, bool * is_in_table ){
 
 
     if (searchfreepage2(pagetablev2, &index)){
-      redwri++; //bring from the disk to the memory
       return index;
 
     }else if (searchfirstcase2(pagetablev2, &index)){  //seguimiento de la pagina que se hizo referencia pro ultima vez */
-      //redwri -> se añade dependiendo si la pagina a remplazar se encuentra limpia o no 
+      //redwri -> se añade dependiendo si la pagina a remplazar se encuentra limpia o no
       return index;
 
-     }else if (searchsecondcase2(pagetablev2, &index)){ //si hay dos paginas deveolvemos la que no esta sucia */
-       redwri++; // una operacion de disco  porque se devuelve una página limpia */
+     }else if (searchsecondcase2(pagetablev2, &index)){ //si hay dos paginas deveolvemos la limpia
        return index;
 
      }else if (searchthirdcase2(pagetablev2, &index)) {//si ambas estan sucias o limpias devolvemos la pagina con menor número */
-      //redwri -> se añade dependiendo si la pagina a remplazar se encuentra limpia o no 
+      //redwri -> se añade dependiendo si la pagina a remplazar se encuentra limpia o no
       return index;
     }
   }else{
@@ -172,7 +199,7 @@ void replace_two(int id_process, int instruction, int memoryreference, char * ca
   pagetablev2[index][1]=page;
   pagetablev2[index][3]=number_instruction;
   pagetablev2[index][2]=0;
-  
+
   page = memoryreference/512;
 
   index = searchind_two(id_process, page, &is_in_table);
@@ -187,6 +214,12 @@ void replace_two(int id_process, int instruction, int memoryreference, char * ca
   if (*caracter == 'W'){
     pagetablev2[index][2]=1;//dirty
   }
+
+  if (*caracter == 'R' && !is_in_table){
+		pagetablev2[index][2] = 0;   //dirty
+	}
+
+
 }
 /*-----------------------------VERSION 1--------------------------------------------------*/
 /*----------------------------------------------------------------------------------------*/
@@ -269,10 +302,10 @@ int searchind_one(int idproc, int page, bool * is_in_table){
 	int index;
 	//Buscamos por id de proceso y pagina.
 	*is_in_table = searchbypair(idproc,page,&index);
-	
+
 	if (!*is_in_table){
 		faults++; //Contamos un fallo cada vez que no esta en la tabla una pagina especifica.
-		if (searchfreepage(&index)){			
+		if (searchfreepage(&index)){
 			return index;
 		}else if(searchfirstcase(&index)){//00
 			return index;
@@ -288,7 +321,7 @@ int searchind_one(int idproc, int page, bool * is_in_table){
 	}else if(*is_in_table){
 		return index;
 	}
-	
+
 }
 
 //Values: --ID--, --Pagina--, --Referencia--, --Dirty--     version 1
@@ -296,7 +329,7 @@ int searchind_one(int idproc, int page, bool * is_in_table){
 void replace_one(int id_process, int instruction, int memoryreference, char * caracter, int number_instruction){
 	int index;
 	int page = instruction/512;
-	
+
 	bool is_in_table;
 
 	index = searchind_one(id_process, page, &is_in_table);
@@ -304,34 +337,34 @@ void replace_one(int id_process, int instruction, int memoryreference, char * ca
 	if (!is_in_table && debug==1) {
     printf("%d %d %d %d %d \n ", number_instruction, index, pagetable[index][0], pagetable[index][1], pagetable[index][3]);
 	}
-	
+
 
 	pagetable[index][0]=id_process;
 	pagetable[index][1]=page;
 	pagetable[index][2]=1;
 	pagetable[index][3]=0;
-	
-		
+
+
 	page = memoryreference/512;
 	index = searchind_one(id_process, page, &is_in_table);
-	
+
 	if (!is_in_table && debug==1) {
     printf("%d %d %d %d %d \n ", number_instruction, index, pagetable[index][0], pagetable[index][1], pagetable[index][3]);
 	}
-	
+
 	pagetable[index][0] = id_process;
 	pagetable[index][1] = page;
 	pagetable[index][2] = 1;
-	
+
 	if (*caracter == 'W'){
 		pagetable[index][3] = 1;   //dirty
 		//~ printf("Haciendo escritura \n");
 	}
-	
+
 	if (*caracter == 'R' && !is_in_table){
 		pagetable[index][3] = 0;   //dirty
 	}
-	
+
 }
 
 //In this function we set -1 to all values inside pagetable.
@@ -403,7 +436,7 @@ int main(int argc, char *argv[])
 	int contador=1;
 	int instruc_count=1;
 	while (1){
-		
+
 		fscanf(fptr, "%d %d %d %c", &id_process, &instruction, &memoryreference, caracter);
 		if (feof(fptr)) break;
 
@@ -414,14 +447,14 @@ int main(int argc, char *argv[])
 			//Setting initial values
 			replace_two(id_process, instruction, memoryreference, caracter, contador);
 		}
-		
+
 		if(instruc_count==200){
 			setreferencetozero();
 			instruc_count=0;
 		}
-		
+
 		instruc_count++;
-		
+
 		contador++;//To establish every 200 instructions the reference bit to zero
 		//printf("%d %d %d %s\n", id_process, instruction, memoryreference, caracter);
 	}
@@ -429,12 +462,12 @@ int main(int argc, char *argv[])
 
 	//printing matrix
 	//~ for (int i=0; i<32; i++){ //all id process to -1 */
-		//~ for (int j=0; j<4; j++){ 
-			//~ printf("%d  ",pagetable[i][j]); 
-		//~ } 
-	//~ printf("\n"); 
+		//~ for (int j=0; j<4; j++){
+			//~ printf("%d  ",pagetable[i][j]);
+		//~ }
+	//~ printf("\n");
 	//~ }
-	
+
 	if (version == 1){
 		printf("REPORTE FINAL VERSION 1 \n");
 		printf("Total de fallas %d \n", faults );
@@ -448,11 +481,8 @@ int main(int argc, char *argv[])
     printf("Total de escrituras %d \n", redwri);
     if(debug == 1){
       printf("Debug activated \n");
-	 } 
-	}	
+	 }
+	}
 
     return 0;
 }
-
-
-
