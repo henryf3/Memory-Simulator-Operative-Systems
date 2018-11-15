@@ -4,8 +4,6 @@ Es decir
 ./simulador archivo_de_texto version [1]
 Por ejemplo:
 ./simulador data1.txt 1 1
- 
-Hemos creado un repositorio en Github para tener un control sobre los cambios que fuimos haciendo a lo largo de estos días, por lo cual le paso el enlace:
-https://github.com/henryf3/Simulator
+
 
 Donde "simulador.c" es el codigo fuente y "simulador" es el ejecutable ya compilado.
